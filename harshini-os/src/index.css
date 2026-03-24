@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 214 30% 5%;
+    --foreground: 215 25% 90%;
+    --card: 215 30% 7%;
+    --card-foreground: 215 25% 90%;
+    --popover: 215 30% 7%;
+    --popover-foreground: 215 25% 90%;
+    --primary: 187 94% 47%;
+    --primary-foreground: 214 30% 5%;
+    --secondary: 263 84% 58%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 14% 28%;
+    --muted-foreground: 215 14% 40%;
+    --accent: 160 60% 45%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 187 94% 47% / 0.15;
+    --input: 187 94% 47% / 0.1;
+    --ring: 187 94% 47%;
+    --radius: 0.5rem;
+
+    --bg-primary: #0B0F14;
+    --bg-secondary: #0D1117;
+    --bg-panel: rgba(13,17,23,0.85);
+    --neon-cyan: #06B6D4;
+    --neon-purple: #7C3AED;
+    --neon-green: #10B981;
+    --neon-red: #EF4444;
+    --neon-gold: #F59E0B;
+    --neon-blue: #3B82F6;
+    --neon-pink: #EC4899;
+    --neon-teal: #14B8A6;
+    --text-primary: #E2E8F0;
+    --text-muted: #4B5563;
+    --text-dim: #1F2937;
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: none;
+  }
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--neon-cyan), var(--neon-purple)); border-radius: 9999px; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes blinkCursor { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes pulseGlow { 0%,100%{opacity:1;box-shadow:0 0 6px #22C55E} 50%{opacity:0.6;box-shadow:0 0 12px #22C55E} }
+@keyframes pulseRing { 0%{transform:translate(-50%,-50%) scale(1);opacity:0.7} 100%{transform:translate(-50%,-50%) scale(2.2);opacity:0} }
+@keyframes dataFlow { 0%,100%{width:65%} 33%{width:88%} 66%{width:72%} }
+@keyframes matrixFall { 0%{transform:translateY(-120%);opacity:0} 40%{opacity:0.07} 100%{transform:translateY(350%);opacity:0} }
+@keyframes shimmerSweep { 0%{transform:translateY(-100%)} 100%{transform:translateY(500%)} }
+@keyframes atomSpin1 { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes atomSpin2 { from{transform:rotateX(60deg) rotate(120deg)} to{transform:rotateX(60deg) rotate(480deg)} }
+@keyframes atomSpin3 { from{transform:rotateX(60deg) rotate(240deg)} to{transform:rotateX(60deg) rotate(600deg)} }
+@keyframes radarPulse { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.6} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+@keyframes networkPulse { 0%,100%{opacity:0.04} 50%{opacity:0.12} }
