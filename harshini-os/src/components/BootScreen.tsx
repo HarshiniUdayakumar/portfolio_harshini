@@ -8,7 +8,7 @@ interface BootScreenProps {
 const LINES = [
   { text: '$ Initializing HARSHINI_U System...', color: 'rgba(6,182,212,0.7)', delay: 0 },
 
-  { text: '> Loading Core Modules: AI/ML • Full-Stack • Cybersecurity', color: '#94A3B8', delay: 700 },
+  { text: '> Loading Core Modules: Full-Stack-Development • AI/ML• Cybersecurity', color: '#94A3B8', delay: 700 },
 
   { text: '> Syncing Experience & Projects...   ✓ Ready', color: '#10B981', delay: 1400 },
 
