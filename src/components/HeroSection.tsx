@@ -25,6 +25,19 @@ const SKILLS_BARS = [
 
 const HeroSection = () => {
   const [roleIndex, setRoleIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmall(window.innerWidth < 480);
+    };
+
+    handleResize(); // initial
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const iv = setInterval(() => setRoleIndex(p => (p + 1) % ROLES.length), 2800);
@@ -41,6 +54,7 @@ const HeroSection = () => {
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 52,
+        paddingBottom: 40,
       }}
     >
       <div
@@ -50,12 +64,18 @@ const HeroSection = () => {
           margin: '0 auto',
           padding: '0 24px',
           display: 'grid',
-          gap: 64,
+          gap: isMobile ? 32 : 64,
         }}
         className="lg:grid-cols-2 grid-cols-1"
       >
         {/* LEFT SIDE */}
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: isMobile ? 'center' : 'flex-start',
+          textAlign: isMobile ? 'center' : 'left'
+        }}>
           
           <motion.h1
             initial={{ opacity: 0, x: -30 }}
@@ -100,7 +120,13 @@ const HeroSection = () => {
           </div>
 
           {/* PROFILE INFO */}
-          <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+          <div style={{
+            display: 'flex',
+            gap: 12,
+            marginTop: 24,
+            flexWrap: 'wrap',
+            justifyContent: isMobile ? 'center' : 'flex-start'
+          }}>
             {PROFILE_INFO.map(s => (
               <div key={s.label} style={{
                 background: 'rgba(6,182,212,0.04)',
@@ -124,11 +150,11 @@ const HeroSection = () => {
 
           {/* BIO */}
           <p style={{
-            fontSize: 18,
+            fontSize: isMobile ? 15 : 18,
             color: '#6B7280',
             lineHeight: 1.8,
             marginTop: 16,
-            maxWidth: 480,
+            maxWidth: isMobile ? '100%' : 480,
             fontWeight: 700,
           }}>
             Computer Science student building intelligent systems and scalable applications,
@@ -137,13 +163,18 @@ const HeroSection = () => {
         </div>
 
         {/* RIGHT SIDE */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%'
+        }}>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             style={{
-              width: 380,
+              width: '100%',
+              maxWidth: 380,
               background: 'rgba(13,17,23,0.8)',
               border: '1px solid rgba(6,182,212,0.15)',
               borderRadius: 16,
@@ -158,8 +189,8 @@ const HeroSection = () => {
                 src="/profile.jpg"
                 alt="profile"
                 style={{
-                  width: 140,
-                  height: 140,
+                  width: isMobile ? 110 : 140,
+                  height: isMobile ? 110 : 140,
                   borderRadius: '50%',
                   objectFit: 'cover',
                   border: '2px solid rgba(6,182,212,0.3)',
@@ -172,7 +203,9 @@ const HeroSection = () => {
               display: 'flex',
               gap: 10,
               justifyContent: 'center',
-              marginBottom: 20
+              marginBottom: 20,
+              flexDirection: isSmall ? 'column' : 'row',
+              alignItems: 'center'
             }}>
               <button
                 style={{

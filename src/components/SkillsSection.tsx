@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const CARDS = [
@@ -46,7 +46,7 @@ const DOMAINS = [
   { icon: '🎨', name: 'UI/UX Design' },
 ];
 
-const SkillChip = ({ text, accent, highlighted, tooltip }: { text: string; accent: string; highlighted: boolean; tooltip?: string }) => {
+const SkillChip = ({ text, accent, highlighted, tooltip }) => {
   const [showTip, setShowTip] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -67,25 +67,21 @@ const SkillChip = ({ text, accent, highlighted, tooltip }: { text: string; accen
         color: highlighted ? '#fff' : (isHovered ? '#94A3B8' : '#4B5563'),
         padding: '4px 12px',
         borderRadius: 5,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: highlighted ? 600 : 400,
-        fontFamily: 'var(--font-body)',
         boxShadow: highlighted
           ? (isHovered
             ? `0 0 16px ${accent}55, 0 0 32px ${accent}22, inset 0 0 8px ${accent}15`
             : `0 0 8px ${accent}33`)
           : 'none',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        position: 'relative',
-        overflow: 'hidden',
       }}>
         {text}
       </span>
 
       {showTip && tooltip && (
         <motion.div
-          initial={{ opacity: 0, y: 4, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
           style={{
             position: 'absolute',
             bottom: '100%',
@@ -96,12 +92,10 @@ const SkillChip = ({ text, accent, highlighted, tooltip }: { text: string; accen
             border: `1px solid ${accent}66`,
             borderRadius: 6,
             padding: '6px 10px',
-            fontFamily: 'var(--font-mono)',
             fontSize: 10,
             color: '#C4B5FD',
             whiteSpace: 'nowrap',
             zIndex: 50,
-            boxShadow: `0 4px 20px ${accent}22`,
           }}
         >
           {tooltip}
@@ -112,32 +106,63 @@ const SkillChip = ({ text, accent, highlighted, tooltip }: { text: string; accen
 };
 
 const SkillsSection = () => {
-  return (
-    <section id="skills" style={{ position: 'relative', zIndex: 10, background: 'transparent', padding: '80px 0' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
+  const [isMobile, setIsMobile] = useState(false);
 
-        <div style={{ marginBottom: 48 }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'rgba(6,182,212,0.5)', letterSpacing: '0.15em' }}>{'// MODULE_02 / TECHNICAL.SKILLS'}</span>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)', color: '#fff', marginTop: 8 }}>TECHNICAL SKILLS</h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#4B5563', marginTop: 8 }}>Domain-specialized expertise · highlighted tools shown</p>
-          <div style={{ width: '100%', height: 1, background: 'rgba(6,182,212,0.08)', marginTop: 16 }} />
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <section id="skills" style={{
+      position: 'relative',
+      zIndex: 10,
+      background: 'transparent',
+      padding: isMobile ? '60px 0' : '80px 0'
+    }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
+
+        {/* HEADER */}
+        <div style={{ marginBottom: isMobile ? 32 : 48 }}>
+          <span style={{ fontSize: 13, color: 'rgba(6,182,212,0.5)' }}>
+            {'// MODULE_02 / TECHNICAL.SKILLS'}
+          </span>
+          <h2 style={{
+            fontWeight: 800,
+            fontSize: 'clamp(1.6rem,4vw,3rem)',
+            color: '#fff',
+            marginTop: 8
+          }}>
+            TECHNICAL SKILLS
+          </h2>
+          <p style={{ fontSize: 13, color: '#4B5563', marginTop: 8 }}>
+            Domain-specialized expertise · highlighted tools shown
+          </p>
         </div>
 
-        <div style={{ display: 'grid', gap: 14 }} className="lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+        {/* CARDS */}
+        <div style={{
+          display: 'grid',
+          gap: isMobile ? 12 : 14
+        }}
+        className="lg:grid-cols-3 md:grid-cols-2 grid-cols-1"
+        >
           {CARDS.map((card, i) => (
             <motion.div
               key={card.id}
-              initial={{ opacity: 0, y: 32, scale: 0.97 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: i * 0.09, duration: 0.45 }}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
               style={{
                 background: 'rgba(13,17,23,0.7)',
                 border: `1px solid ${card.accent}1a`,
                 borderRadius: 12,
-                padding: 22,
+                padding: isMobile ? 16 : 22,
 
-                // ✅ ONLY THIS LINE ADDED
-                gridColumn: card.id === 'SOFT_07' ? '2 / 3' : 'auto',
+                // ✅ FIX: disable center hack on mobile
+                gridColumn: (!isMobile && card.id === 'SOFT_07') ? '2 / 3' : 'auto',
               }}
             >
 
@@ -148,109 +173,52 @@ const SkillsSection = () => {
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {card.highlighted.map(s => (
-                  <SkillChip key={s} text={s} accent={card.accent} highlighted tooltip={(card as any).tooltips?.[s]} />
+                  <SkillChip
+                    key={s}
+                    text={s}
+                    accent={card.accent}
+                    highlighted
+                    tooltip={card.tooltips?.[s]}
+                  />
                 ))}
               </div>
 
             </motion.div>
           ))}
 
-          {/* DOMAINS (UNCHANGED) */}
-          {/* Domains card */}
-<motion.div
-  initial={{ opacity: 0, y: 32 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ delay: 0.7, duration: 0.45 }}
-  style={{
-    gridColumn: '1 / -1',
-    background: 'rgba(13,17,23,0.7)',
-    border: '1px solid rgba(20,184,166,0.12)',
-    borderRadius: 12,
-    padding: 22,
-    backdropFilter: 'blur(16px)',
-  }}
->
-  {/* Header */}
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16
-  }}>
-    <div style={{
-      width: 32,
-      height: 32,
-      background: 'rgba(20,184,166,0.1)',
-      border: '1px solid rgba(20,184,166,0.25)',
-      borderRadius: 6,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>🌍</div>
+          {/* DOMAINS */}
+          <motion.div
+            style={{
+              gridColumn: '1 / -1',
+              padding: isMobile ? 16 : 22
+            }}
+          >
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: isMobile ? 10 : 14
+            }}>
+              {DOMAINS.map((d, i) => (
+                <motion.div
+                  key={d.name}
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.2 }}
+                  style={{
+                    padding: isMobile ? '10px 14px' : '14px 20px',
+                    minWidth: isMobile ? 110 : 130,
+                    borderRadius: 10,
+                    background: 'rgba(20,184,166,0.06)',
+                    textAlign: 'center'
+                  }}
+                >
+                  <div>{d.icon}</div>
+                  <div style={{ fontSize: 12 }}>{d.name}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
-    <span style={{
-      fontWeight: 600,
-      fontSize: 14,
-      color: '#14B8A6'
-    }}>
-      Domains
-    </span>
-  </div>
-
-  {/* Domains Grid */}
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: 14
-  }}>
-    {DOMAINS.map((d, i) => (
-      <motion.div
-        key={d.name}
-
-        // 🔥 floating animation
-        animate={{
-          y: [0, -6, 0],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          delay: i * 0.2
-        }}
-
-        whileHover={{
-          scale: 1.08,
-          y: -4,
-          boxShadow: '0 0 20px rgba(20,184,166,0.3)'
-        }}
-
-        style={{
-          background: 'rgba(20,184,166,0.06)',
-          border: '1px solid rgba(20,184,166,0.2)',
-          borderRadius: 10,
-          padding: '14px 20px',
-          textAlign: 'center',
-          minWidth: 130,
-          cursor: 'default',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <div style={{ fontSize: 20, marginBottom: 6 }}>
-          {d.icon}
-        </div>
-
-        <div style={{
-          fontSize: 13,
-          color: '#14B8A6',
-          fontWeight: 600
-        }}>
-          {d.name}
-        </div>
-      </motion.div>
-    ))}
-  </div>
-</motion.div>
         </div>
       </div>
     </section>
