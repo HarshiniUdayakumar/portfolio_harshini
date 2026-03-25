@@ -17,22 +17,22 @@ const Footer = () => (
           <span>H</span><span>U</span>
         </div>
         <div>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, color: '#fff' }}>HARSHINI U</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(6,182,212,0.35)', marginTop: 2 }}>harshini_u@portfolio_os</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 14, color: '#fff' }}>HARSHINI U</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: '#06B6D4', marginTop: 2 }}>harshini_u@portfolio_os</div>
         </div>
       </div>
 
       {/* Center */}
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: '#374151' }}>Designed & Engineered by Harshini U · 2026</div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(6,182,212,0.2)', marginTop: 2 }}>B.E Computer Science · REC Chennai</div>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 800,color: '#fff' }}>Designed & Engineered by Harshini U · 2026</div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 800,color: '#06B6D4', marginTop: 2 }}>B.E Computer Science · REC Chennai</div>
       </div>
 
       {/* Right */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(6,182,212,0.4)', background: 'none', border: 'none', cursor: 'pointer' }}
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 800, color: '#06B6D4', background: 'none', border: 'none', cursor: 'pointer' }}
         >↑ back_to_top</button>
       </div>
     </div>

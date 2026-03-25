@@ -1,61 +1,79 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useState, useCallback, useRef } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 const CustomCursor = () => {
   const [hovering, setHovering] = useState(false);
   const [clicking, setClicking] = useState(false);
   const [visible, setVisible] = useState(false);
-  const dotX = useMotionValue(0);
-  const dotY = useMotionValue(0);
-  const ringX = useMotionValue(0);
-  const ringY = useMotionValue(0);
-  const glowOpacity = useMotionValue(0.3);
+  const [mode, setMode] = useState<"default" | "link" | "button">("default");
 
-  const springConfig = { stiffness: 150, damping: 15, mass: 0.1 };
-  const ringSpringConfig = { stiffness: 50, damping: 20, mass: 0.5 };
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-  const smoothDotX = useSpring(dotX, springConfig);
-  const smoothDotY = useSpring(dotY, springConfig);
-  const smoothRingX = useSpring(ringX, ringSpringConfig);
-  const smoothRingY = useSpring(ringY, ringSpringConfig);
-  const smoothGlow = useSpring(glowOpacity, { stiffness: 100, damping: 20 });
+  const smoothX = useSpring(x, { stiffness: 120, damping: 20 });
+  const smoothY = useSpring(y, { stiffness: 120, damping: 20 });
 
-  const magnetTarget = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
+  const [particles, setParticles] = useState<any[]>([]);
+  const [sparks, setSparks] = useState<any[]>([]);
 
+  const magnetTarget = useRef({ x: 0, y: 0, active: false });
+
+  // 🖱️ MOVE
   const handleMove = useCallback((e: MouseEvent) => {
-    let x = e.clientX;
-    let y = e.clientY;
+    let mx = e.clientX;
+    let my = e.clientY;
 
-    // Magnetic pull toward interactive elements
     if (magnetTarget.current.active) {
-      const tx = magnetTarget.current.x;
-      const ty = magnetTarget.current.y;
-      const pull = 0.3;
-      x = x + (tx - x) * pull;
-      y = y + (ty - y) * pull;
+      const { x: tx, y: ty } = magnetTarget.current;
+      const pull = 0.25;
+      mx += (tx - mx) * pull;
+      my += (ty - my) * pull;
     }
 
-    dotX.set(x);
-    dotY.set(y);
-    ringX.set(x);
-    ringY.set(y);
-  }, [dotX, dotY, ringX, ringY]);
+    x.set(mx);
+    y.set(my);
+
+    // ✨ PARTICLE TRAIL
+    setParticles((prev) => [
+      ...prev.slice(-20),
+      { id: Date.now(), x: mx, y: my },
+    ]);
+  }, [x, y]);
+
+  // ⚡ CLICK SPARKS
+  const createSparks = (cx: number, cy: number) => {
+    const newSparks = Array.from({ length: 8 }).map((_, i) => ({
+      id: Date.now() + i,
+      x: cx,
+      y: cy,
+      angle: (i / 8) * Math.PI * 2,
+    }));
+    setSparks(newSparks);
+    setTimeout(() => setSparks([]), 400);
+  };
 
   useEffect(() => {
-    if ('ontouchstart' in window) return;
+    if ("ontouchstart" in window) return;
     setVisible(true);
 
-    window.addEventListener('mousemove', handleMove);
+    window.addEventListener("mousemove", handleMove);
 
-    const onDown = () => setClicking(true);
+    const onDown = (e: MouseEvent) => {
+      setClicking(true);
+      createSparks(e.clientX, e.clientY);
+    };
     const onUp = () => setClicking(false);
-    window.addEventListener('mousedown', onDown);
-    window.addEventListener('mouseup', onUp);
+
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mouseup", onUp);
 
     const addHover = (e: Event) => {
       setHovering(true);
-      glowOpacity.set(0.8);
       const el = e.currentTarget as HTMLElement;
+
+      if (el.tagName === "A") setMode("link");
+      else if (el.tagName === "BUTTON") setMode("button");
+
       const rect = el.getBoundingClientRect();
       magnetTarget.current = {
         x: rect.left + rect.width / 2,
@@ -63,108 +81,155 @@ const CustomCursor = () => {
         active: true,
       };
     };
+
     const removeHover = () => {
       setHovering(false);
-      glowOpacity.set(0.3);
+      setMode("default");
       magnetTarget.current.active = false;
     };
 
-    const attachListeners = () => {
-      const els = document.querySelectorAll('a, button, [role="button"], .cursor-magnetic');
-      els.forEach(el => {
-        el.addEventListener('mouseenter', addHover);
-        el.addEventListener('mouseleave', removeHover);
-      });
-      return els;
-    };
+    const elements = document.querySelectorAll("a, button, .cursor-magnetic");
 
-    const els = attachListeners();
-
-    // Re-attach on DOM changes
-    const observer = new MutationObserver(() => {
-      els.forEach(el => {
-        el.removeEventListener('mouseenter', addHover);
-        el.removeEventListener('mouseleave', removeHover);
-      });
-      attachListeners();
+    elements.forEach((el) => {
+      el.addEventListener("mouseenter", addHover);
+      el.addEventListener("mouseleave", removeHover);
     });
-    observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
-      window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('mousedown', onDown);
-      window.removeEventListener('mouseup', onUp);
-      observer.disconnect();
-      els.forEach(el => {
-        el.removeEventListener('mouseenter', addHover);
-        el.removeEventListener('mouseleave', removeHover);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mouseup", onUp);
+
+      elements.forEach((el) => {
+        el.removeEventListener("mouseenter", addHover);
+        el.removeEventListener("mouseleave", removeHover);
       });
     };
-  }, [handleMove, glowOpacity]);
+  }, [handleMove]);
 
   if (!visible) return null;
 
   return (
     <>
-      {/* Outer aura glow */}
+      {/* ✨ PARTICLES */}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ opacity: 0.8, scale: 1 }}
+          animate={{ opacity: 0, scale: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            position: "fixed",
+            left: p.x,
+            top: p.y,
+            width: 4,
+            height: 4,
+            borderRadius: "50%",
+            background: "#06B6D4",
+            pointerEvents: "none",
+            zIndex: 9997,
+          }}
+        />
+      ))}
+
+      {/* ⚡ SPARKS */}
+      {sparks.map((s) => (
+        <motion.div
+          key={s.id}
+          initial={{ x: 0, y: 0, opacity: 1 }}
+          animate={{
+            x: Math.cos(s.angle) * 30,
+            y: Math.sin(s.angle) * 30,
+            opacity: 0,
+          }}
+          transition={{ duration: 0.4 }}
+          style={{
+            position: "fixed",
+            left: s.x,
+            top: s.y,
+            width: 3,
+            height: 3,
+            background: "#7C3AED",
+            pointerEvents: "none",
+            zIndex: 9998,
+          }}
+        />
+      ))}
+
+      {/* 🧠 AI PULSE */}
       <motion.div
         style={{
-          position: 'fixed',
-          width: 60,
-          height: 60,
-          borderRadius: 9999,
-          left: smoothRingX,
-          top: smoothRingY,
+          position: "fixed",
+          left: smoothX,
+          top: smoothY,
           x: -30,
           y: -30,
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(6,182,212,0.2), transparent)",
+          pointerEvents: "none",
           zIndex: 9998,
-          pointerEvents: 'none',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, rgba(124,58,237,0.06) 40%, transparent 70%)',
-          opacity: smoothGlow,
-          scale: hovering ? 2.5 : clicking ? 0.8 : 1,
+          scale: hovering ? 2.5 : 1,
         }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+        transition={{ duration: 0.3 }}
       />
 
-      {/* Ring */}
+      {/* 🎯 TARGET RING */}
       <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
         style={{
-          position: 'fixed',
-          width: 32,
-          height: 32,
-          borderRadius: 9999,
-          left: smoothRingX,
-          top: smoothRingY,
-          x: -16,
-          y: -16,
+          position: "fixed",
+          left: smoothX,
+          top: smoothY,
+          x: -18,
+          y: -18,
+          width: 36,
+          height: 36,
+          borderRadius: "50%",
+          border: "1px solid #06B6D4",
+          pointerEvents: "none",
           zIndex: 9999,
-          pointerEvents: 'none',
-          border: '1.5px solid rgba(6,182,212,0.35)',
-          scale: hovering ? 2.2 : clicking ? 0.7 : 1,
-          opacity: hovering ? 1 : 0.6,
+          scale: mode === "button" ? 1.8 : hovering ? 1.4 : 1,
         }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
       />
 
-      {/* Dot */}
+      {/* ✖ CROSSHAIR */}
       <motion.div
         style={{
-          position: 'fixed',
-          width: 6,
-          height: 6,
-          borderRadius: 9999,
-          background: '#06B6D4',
-          left: smoothDotX,
-          top: smoothDotY,
+          position: "fixed",
+          left: smoothX,
+          top: smoothY,
+          x: -10,
+          y: -10,
+          width: 20,
+          height: 20,
+          pointerEvents: "none",
+          zIndex: 10000,
+        }}
+      >
+        <div style={{ position: "absolute", top: "50%", width: "100%", height: 1, background: "#06B6D4" }} />
+        <div style={{ position: "absolute", left: "50%", height: "100%", width: 1, background: "#06B6D4" }} />
+      </motion.div>
+
+      {/* 💎 CORE */}
+      <motion.div
+        style={{
+          position: "fixed",
+          left: smoothX,
+          top: smoothY,
           x: -3,
           y: -3,
-          zIndex: 9999,
-          pointerEvents: 'none',
-          mixBlendMode: 'difference',
-          scale: hovering ? 0 : clicking ? 1.8 : 1,
-          boxShadow: '0 0 6px rgba(6,182,212,0.6)',
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: "#06B6D4",
+          pointerEvents: "none",
+          zIndex: 10001,
+          scale: clicking ? 2 : 1,
         }}
-        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
       />
     </>
   );

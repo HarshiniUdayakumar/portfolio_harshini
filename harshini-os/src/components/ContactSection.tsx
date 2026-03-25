@@ -5,7 +5,7 @@ const CONTACTS = [
   { cmd: '$ contact --email', val: 'harshiniu176@gmail.com', color: '#06B6D4' },
   { cmd: '$ contact --phone', val: '+91 9360621577', color: '#fff' },
   { cmd: '$ contact --linkedin', val: 'linkedin.com/in/harshiniudayakumar', color: '#60A5FA' },
-  { cmd: '$ contact --github', val: 'github.com/HarshiniUdayakumar', color: '#4B5563' },
+  { cmd: '$ contact --github', val: 'github.com/HarshiniUdayakumar', color: '#fff' },
 ];
 
 const ContactSection = () => {
@@ -58,7 +58,7 @@ const ContactSection = () => {
           <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.7v2.2h.07c.66-1.25 2.28-2.56 4.7-2.56 5.02 0 5.94 3.3 5.94 7.59V24h-5v-7.5c0-1.8-.03-4.12-2.5-4.12-2.5 0-2.88 1.95-2.88 3.98V24h-5V8z"/>
         </svg>
       ) : (
-        <svg width="16" height="16" fill="#4B5563" viewBox="0 0 24 24">
+        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
           <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.84 10.91.57.1.78-.25.78-.56v-2.17c-3.19.69-3.86-1.54-3.86-1.54-.52-1.31-1.28-1.66-1.28-1.66-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.2-3.1-.12-.3-.52-1.5.11-3.13 0 0 .98-.31 3.2 1.18a11.1 11.1 0 0 1 5.82 0c2.22-1.5 3.2-1.18 3.2-1.18.63 1.63.23 2.83.11 3.13.75.81 1.2 1.84 1.2 3.1 0 4.43-2.68 5.4-5.24 5.69.41.35.77 1.04.77 2.1v3.12c0 .31.21.67.79.56A10.51 10.51 0 0 0 23.5 12c0-6.35-5.15-11.5-11.5-11.5z"/>
         </svg>
       );
@@ -82,27 +82,14 @@ const ContactSection = () => {
   })}
 </div>
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-              {['GitHub', 'LinkedIn'].map(s => (
-                <a key={s} href={s === 'GitHub' ? 'https://github.com/HarshiniUdayakumar' : 'https://linkedin.com/in/harshiniudayakumar'} target="_blank" rel="noopener noreferrer">
-                  <motion.div
-                    whileHover={{ scale: 1.1, borderColor: 'rgba(6,182,212,0.4)' }}
-                    style={{
-                      width: 36, height: 36, borderRadius: 6, border: '1px solid rgba(255,255,255,0.08)',
-                      background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 14, color: '#94A3B8', cursor: 'pointer',
-                    }}
-                  >{s === 'GitHub' ? '⌘' : '⟁'}</motion.div>
-                </a>
-              ))}
-            </div>
+            
           </div>
 
           <div style={{
             background: 'rgba(13,17,23,0.8)', border: '1px solid rgba(6,182,212,0.12)',
             borderRadius: 14, padding: 28, backdropFilter: 'blur(16px)',
           }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(6,182,212,0.4)', letterSpacing: '0.15em' }}>{'// NEW_MESSAGE'}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'rgba(6,182,212,0.4)', letterSpacing: '0.15em' }}>{'// NEW_MESSAGE'}</span>
 
             <AnimatePresence mode="wait">
               {!submitted ? (

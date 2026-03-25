@@ -117,7 +117,7 @@ const SkillsSection = () => {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
 
         <div style={{ marginBottom: 48 }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(6,182,212,0.5)', letterSpacing: '0.15em' }}>{'// MODULE_02 / TECHNICAL.SKILLS'}</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'rgba(6,182,212,0.5)', letterSpacing: '0.15em' }}>{'// MODULE_02 / TECHNICAL.SKILLS'}</span>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)', color: '#fff', marginTop: 8 }}>TECHNICAL SKILLS</h2>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#4B5563', marginTop: 8 }}>Domain-specialized expertise · highlighted tools shown</p>
           <div style={{ width: '100%', height: 1, background: 'rgba(6,182,212,0.08)', marginTop: 16 }} />
